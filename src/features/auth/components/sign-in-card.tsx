@@ -1,3 +1,4 @@
+"use client";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { DottedSeperator } from "@/components/dotted-seperator";
@@ -24,7 +25,7 @@ import { useLogin } from "../api/use-login";
 // });
 
 function SignInCard() {
-  const { mutate } = useLogin();
+  const { mutate, isPending } = useLogin();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -82,7 +83,7 @@ function SignInCard() {
               )}
             />
 
-            <Button disabled={false} size="lg" className="w-full">
+            <Button disabled={isPending} size="lg" className="w-full">
               Login
             </Button>
           </form>
@@ -94,7 +95,7 @@ function SignInCard() {
       <CardContent className="p-7 flex flex-col gap-y-4">
         <Button
           variant="secondary"
-          disabled={false}
+          disabled={isPending}
           size="lg"
           className="w-full"
         >
@@ -103,7 +104,7 @@ function SignInCard() {
         </Button>
         <Button
           variant="secondary"
-          disabled={false}
+          disabled={isPending}
           size="lg"
           className="w-full"
         >

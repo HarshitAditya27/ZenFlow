@@ -1,3 +1,4 @@
+"use client";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { DottedSeperator } from "@/components/dotted-seperator";
@@ -28,7 +29,7 @@ import { registerSchema } from "../schemas";
 import { useRegister } from "../api/use-register";
 
 function SignUpCard() {
-  const { mutate } = useRegister();
+  const { mutate, isPending } = useRegister();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -111,7 +112,7 @@ function SignUpCard() {
               )}
             />
 
-            <Button disabled={false} size="lg" className="w-full">
+            <Button disabled={isPending} size="lg" className="w-full">
               Create Account
             </Button>
           </form>
@@ -123,7 +124,7 @@ function SignUpCard() {
       <CardContent className="p-7 flex flex-col gap-y-4">
         <Button
           variant="secondary"
-          disabled={false}
+          disabled={isPending}
           size="lg"
           className="w-full"
         >
@@ -132,7 +133,7 @@ function SignUpCard() {
         </Button>
         <Button
           variant="secondary"
-          disabled={false}
+          disabled={isPending}
           size="lg"
           className="w-full"
         >
