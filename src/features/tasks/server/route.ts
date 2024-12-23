@@ -3,7 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { createTaskSchema } from "../schemas";
 import { getMember } from "@/features/members/utils";
-import { DATABASE_ID, PROJECTS_ID, TASKS_ID } from "@/config";
+import { DATABASE_ID, MEMBERS_ID, PROJECTS_ID, TASKS_ID } from "@/config";
 import { ID, Query } from "node-appwrite";
 import { z } from "zod";
 import { TaskStatus } from "../types";
@@ -65,7 +65,10 @@ const app = new Hono()
       }
       const tasks = await databases.listDocuments(DATABASE_ID, TASKS_ID, query);
       const projectIds = tasks.documents.map((task) => task.projectId);
-      const assigneeIds = tasks.documents.map((task) => task.assigneeIds);
+      const assigneeIds = tasks.documents.map((task) => task.assigneeId);
+      // console.log("projectIds:", projectIds);
+      // console.log("assigneeIds:", assigneeIds);
+
       const projects = await databases.listDocuments<Project>(
         DATABASE_ID,
         PROJECTS_ID,
@@ -73,12 +76,14 @@ const app = new Hono()
       );
       const members = await databases.listDocuments<Project>(
         DATABASE_ID,
-        PROJECTS_ID,
+        MEMBERS_ID,
         assigneeIds.length > 0 ? [Query.contains("$id", assigneeIds)] : []
       );
 
       const assignees = await Promise.all(
         members.documents.map(async (member) => {
+          // console.log("Member data:", member); // Log the entire member object
+          // console.log("Member userId:", member.userId);
           const user = await users.get(member.userId);
           return {
             ...member,
