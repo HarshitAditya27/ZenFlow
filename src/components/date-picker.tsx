@@ -32,7 +32,8 @@ export const DatePicker = ({
           size="lg"
           className={cn(
             "w-full justify-start text-left font-normal px-3",
-            !value && "text-muted-foreground"
+            !value && "text-muted-foreground",
+            className
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
