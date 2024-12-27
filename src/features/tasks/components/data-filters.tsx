@@ -49,14 +49,14 @@ export const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
     if (value == "all") {
       setFilters({ assigneeId: null });
     } else {
-      setFilters({ assigneeId: value as TaskStatus });
+      setFilters({ assigneeId: value as string });
     }
   };
   const onProjectChange = (value: string) => {
     if (value == "all") {
       setFilters({ projectId: null });
     } else {
-      setFilters({ projectId: value as TaskStatus });
+      setFilters({ projectId: value as string });
     }
   };
   if (isLoading) return null;

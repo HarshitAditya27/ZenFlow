@@ -96,14 +96,14 @@ export const EditWorkspaceForm = ({
     };
 
     mutate(
-      { form: finalValues, param: { workspaceId: initialValues.$id } },
-      {
-        onSuccess: () => {
-          form.reset();
-          // onCancel?.();
-          //router.push(`/workspaces/${data.$id}`);
-        },
-      }
+      { form: finalValues, param: { workspaceId: initialValues.$id } }
+      // {
+      //   onSuccess: () => {
+      //     form.reset();
+      //     // onCancel?.();
+      //     //router.push(`/workspaces/${data.$id}`);
+      //   },
+      // }
     );
   };
 
