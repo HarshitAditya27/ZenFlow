@@ -19,6 +19,7 @@ import {
 import Link from "next/link";
 import { loginSchema } from "../schemas";
 import { useLogin } from "../api/use-login";
+import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth";
 // const formSchema = z.object({
 //   email: z.string().trim().email(),
 //   password: z.string().min(1, "Minimum 8 characters needed"),
@@ -94,6 +95,7 @@ function SignInCard() {
       </div>
       <CardContent className="p-7 flex flex-col gap-y-4">
         <Button
+          onClick={() => signUpWithGoogle()}
           variant="secondary"
           disabled={isPending}
           size="lg"
@@ -103,6 +105,7 @@ function SignInCard() {
           Login with Google
         </Button>
         <Button
+          onClick={() => signUpWithGithub()}
           variant="secondary"
           disabled={isPending}
           size="lg"

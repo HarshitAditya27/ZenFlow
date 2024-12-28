@@ -82,8 +82,6 @@ function Projects() {
     workspaceId,
   }) as { data: ProjectsResponse | undefined };
 
-  console.log("Projects data:", data); // Added console.log
-
   return (
     <div className="flex flex-col gap-y-2">
       <div className="flex items-center justify-between">
