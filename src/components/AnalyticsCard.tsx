@@ -9,8 +9,13 @@ interface AnalyticsCardProps {
   increaseValue: number;
 }
 
-export const AnalyticsCard = ({ title, value, variant, increaseValue }) => {
-  const iconColor = variant === "up" ? "text-emerald-500" : "text-red-5==";
+export const AnalyticsCard = ({
+  title,
+  value,
+  variant,
+  increaseValue,
+}: AnalyticsCardProps) => {
+  const iconColor = variant === "up" ? "text-emerald-500" : "text-red-500";
   const increaseValueColor =
     variant === "up" ? "text-emerald-500" : "text-red-500";
   const Icon = variant === "up" ? FaCaretUp : FaCaretDown;

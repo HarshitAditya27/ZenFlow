@@ -19,7 +19,6 @@ import { ProjectAnalyticsResponseType } from "@/features/projects/api/use-get-pr
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { AnalyticsCard } from "./AnalyticsCard";
 import { DottedSeperator } from "./dotted-seperator";
-import { Scroll } from "lucide-react";
 
 export const Analytics = ({ data }: ProjectAnalyticsResponseType) => {
   return (

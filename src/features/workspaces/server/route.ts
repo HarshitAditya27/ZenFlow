@@ -6,7 +6,6 @@ import {
   DATABASE_ID,
   IMAGES_BUCKET_ID,
   MEMBERS_ID,
-  PROJECTS_ID,
   TASKS_ID,
   WORKSPACES_ID,
 } from "@/config";

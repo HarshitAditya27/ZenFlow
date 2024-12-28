@@ -1,4 +1,3 @@
-import React from "react";
 import { useQueryState, parseAsBoolean } from "nuqs";
 
 function useCreateProjectModal() {
