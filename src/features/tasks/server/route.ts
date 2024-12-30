@@ -99,22 +99,47 @@ const app = new Hono()
         PROJECTS_ID,
         projectIds.length > 0 ? [Query.contains("$id", projectIds)] : []
       );
-      const members = await databases.listDocuments<Project>(
+      const members = await databases.listDocuments(
         DATABASE_ID,
         MEMBERS_ID,
         assigneeIds.length > 0 ? [Query.contains("$id", assigneeIds)] : []
       );
 
+      // const assignees = await Promise.all(
+      //   members.documents.map(async (member) => {
+      //     console.log("Member data:", member); // Log the entire member object
+      //     console.log("Member userId:", member.userId);
+      //     const user = await users.get(member.userId);
+      //     return {
+      //       ...member,
+      //       name: user.name,
+      //       email: user.email,
+      //     };
+      //   })
+      // );
+
       const assignees = await Promise.all(
         members.documents.map(async (member) => {
-          // console.log("Member data:", member); // Log the entire member object
-          // console.log("Member userId:", member.userId);
-          const user = await users.get(member.userId);
-          return {
-            ...member,
-            name: user.name,
-            email: user.email,
-          };
+          if (!member.userId) {
+            console.error(
+              `Missing userId for member: ${JSON.stringify(member)}`
+            );
+            return { ...member, name: null, email: null };
+          }
+          try {
+            const user = await users.get(member.userId);
+            return {
+              ...member,
+              name: user.name,
+              email: user.email,
+            };
+          } catch (error) {
+            console.error(
+              `Failed to fetch user for ID ${member.userId}:`,
+              error
+            );
+            return { ...member, name: null, email: null };
+          }
         })
       );
 
