@@ -4,7 +4,7 @@ import { Hono } from "hono";
 import { createTaskSchema } from "../schemas";
 import { getMember } from "@/features/members/utils";
 import { DATABASE_ID, MEMBERS_ID, PROJECTS_ID, TASKS_ID } from "@/config";
-import { ID, Query } from "node-appwrite";
+import { AppwriteException, ID, Query } from "node-appwrite";
 import { z } from "zod";
 import { Task, TaskStatus } from "../types";
 import { createAdminClient } from "@/lib/appwrite";
@@ -32,6 +32,138 @@ const app = new Hono()
     await databases.deleteDocument(DATABASE_ID, TASKS_ID, taskId);
     return c.json({ data: { $id: task.$id } });
   })
+  // .get(
+  //   "/",
+  //   sessionMiddleware,
+  //   zValidator(
+  //     "query",
+  //     z.object({
+  //       workspaceId: z.string(),
+  //       projectId: z.string().nullish(),
+  //       assigneeId: z.string().nullish(),
+  //       status: z.nativeEnum(TaskStatus).nullish(),
+  //       search: z.string().nullish(),
+  //       dueDate: z.string().nullish(),
+  //     })
+  //   ),
+  //   async (c) => {
+  //     const { users } = await createAdminClient();
+  //     const databases = c.get("databases");
+  //     const user = c.get("user");
+  //     const { workspaceId, projectId, status, search, assigneeId, dueDate } =
+  //       c.req.valid("query");
+  //     const member = getMember({
+  //       databases,
+  //       workspaceId,
+  //       userId: user.$id,
+  //     });
+  //     if (!member) {
+  //       return c.json({ error: "Unauthorized" }, 401);
+  //     }
+  //     const query = [
+  //       Query.equal("workspaceId", workspaceId),
+  //       Query.orderDesc("$createdAt"),
+  //     ];
+  //     if (projectId) {
+  //       // console.log("projectId", projectId);
+  //       query.push(Query.equal("projectId", projectId));
+  //     }
+  //     if (status) {
+  //       // console.log("status", status);
+  //       query.push(Query.equal("status", status));
+  //     }
+  //     if (assigneeId) {
+  //       // console.log("assigneeId", assigneeId);
+  //       query.push(Query.equal("assigneeId", assigneeId));
+  //     }
+  //     if (dueDate) {
+  //       // console.log("dueDate", dueDate);
+  //       query.push(Query.equal("dueDate", dueDate));
+  //     }
+  //     if (search) {
+  //       // console.log("search", search);
+  //       query.push(Query.equal("search", search));
+  //     }
+  //     const tasks = await databases.listDocuments<Task>(
+  //       DATABASE_ID,
+  //       TASKS_ID,
+  //       query
+  //     );
+  //     const projectIds = tasks.documents.map((task) => task.projectId);
+  //     const assigneeIds = tasks.documents.map((task) => task.assigneeId);
+  //     // console.log("projectIds:", projectIds);
+  //     // console.log("assigneeIds:", assigneeIds);
+
+  //     const projects = await databases.listDocuments<Project>(
+  //       DATABASE_ID,
+  //       PROJECTS_ID,
+  //       projectIds.length > 0 ? [Query.contains("$id", projectIds)] : []
+  //     );
+  //     const members = await databases.listDocuments(
+  //       DATABASE_ID,
+  //       MEMBERS_ID,
+  //       assigneeIds.length > 0 ? [Query.contains("$id", assigneeIds)] : []
+  //     );
+
+  //     // const assignees = await Promise.all(
+  //     //   members.documents.map(async (member) => {
+  //     //     console.log("Member data:", member); // Log the entire member object
+  //     //     console.log("Member userId:", member.userId);
+  //     //     const user = await users.get(member.userId);
+  //     //     return {
+  //     //       ...member,
+  //     //       name: user.name,
+  //     //       email: user.email,
+  //     //     };
+  //     //   })
+  //     // );
+
+  //     const assignees = await Promise.all(
+  //       members.documents.map(async (member) => {
+  //         if (!member.userId) {
+  //           console.error(
+  //             `Missing userId for member: ${JSON.stringify(member)}`
+  //           );
+  //           return { ...member, name: null, email: null };
+  //         }
+  //         try {
+  //           const user = await users.get(member.userId);
+  //           return {
+  //             ...member,
+  //             name: user.name,
+  //             email: user.email,
+  //           };
+  //         } catch (error) {
+  //           console.error(
+  //             `Failed to fetch user for ID ${member.userId}:`,
+  //             error
+  //           );
+  //           return { ...member, name: null, email: null };
+  //         }
+  //       })
+  //     );
+
+  //     const populatedTasks = tasks.documents.map((task) => {
+  //       const project = projects.documents.find(
+  //         (project) => project.$id === task.projectId
+  //       );
+  //       const assignee = assignees.find(
+  //         (assignee) => assignee.$id === task.assigneeId
+  //       );
+  //       return {
+  //         ...task,
+  //         project,
+  //         assignee,
+  //       };
+  //     });
+  //     return c.json({
+  //       data: {
+  //         ...tasks,
+  //         documents: populatedTasks,
+  //       },
+  //     });
+  //   }
+  // )
   .get(
     "/",
     sessionMiddleware,
@@ -47,121 +179,169 @@ const app = new Hono()
       })
     ),
     async (c) => {
-      const { users } = await createAdminClient();
-      const databases = c.get("databases");
-      const user = c.get("user");
-      const { workspaceId, projectId, status, search, assigneeId, dueDate } =
-        c.req.valid("query");
-      const member = getMember({
-        databases,
-        workspaceId,
-        userId: user.$id,
-      });
-      if (!member) {
-        return c.json({ error: "Unauthorized" }, 401);
-      }
-      const query = [
-        Query.equal("workspaceId", workspaceId),
-        Query.orderDesc("$createdAt"),
-      ];
-      if (projectId) {
-        // console.log("projectId", projectId);
-        query.push(Query.equal("projectId", projectId));
-      }
-      if (status) {
-        // console.log("status", status);
-        query.push(Query.equal("status", status));
-      }
-      if (assigneeId) {
-        // console.log("assigneeId", assigneeId);
-        query.push(Query.equal("assigneeId", assigneeId));
-      }
-      if (dueDate) {
-        // console.log("dueDate", dueDate);
-        query.push(Query.equal("dueDate", dueDate));
-      }
-      if (search) {
-        // console.log("search", search);
-        query.push(Query.equal("search", search));
-      }
-      const tasks = await databases.listDocuments<Task>(
-        DATABASE_ID,
-        TASKS_ID,
-        query
-      );
-      const projectIds = tasks.documents.map((task) => task.projectId);
-      const assigneeIds = tasks.documents.map((task) => task.assigneeId);
-      // console.log("projectIds:", projectIds);
-      // console.log("assigneeIds:", assigneeIds);
+      try {
+        // Initial setup and checks
+        const databases = c.get("databases");
+        console.log("Databases instance check:", {
+          isDefined: !!databases,
+          hasListDocuments: !!databases?.listDocuments,
+        });
 
-      const projects = await databases.listDocuments<Project>(
-        DATABASE_ID,
-        PROJECTS_ID,
-        projectIds.length > 0 ? [Query.contains("$id", projectIds)] : []
-      );
-      const members = await databases.listDocuments(
-        DATABASE_ID,
-        MEMBERS_ID,
-        assigneeIds.length > 0 ? [Query.contains("$id", assigneeIds)] : []
-      );
+        const { users } = await createAdminClient();
+        const user = c.get("user");
 
-      // const assignees = await Promise.all(
-      //   members.documents.map(async (member) => {
-      //     console.log("Member data:", member); // Log the entire member object
-      //     console.log("Member userId:", member.userId);
-      //     const user = await users.get(member.userId);
-      //     return {
-      //       ...member,
-      //       name: user.name,
-      //       email: user.email,
-      //     };
-      //   })
-      // );
+        const { workspaceId, projectId, status, search, assigneeId, dueDate } =
+          c.req.valid("query");
 
-      const assignees = await Promise.all(
-        members.documents.map(async (member) => {
-          if (!member.userId) {
-            console.error(
-              `Missing userId for member: ${JSON.stringify(member)}`
-            );
-            return { ...member, name: null, email: null };
-          }
-          try {
-            const user = await users.get(member.userId);
-            return {
-              ...member,
-              name: user.name,
-              email: user.email,
-            };
-          } catch (error) {
-            console.error(
-              `Failed to fetch user for ID ${member.userId}:`,
-              error
-            );
-            return { ...member, name: null, email: null };
-          }
-        })
-      );
+        console.log("Query parameters:", {
+          workspaceId,
+          projectId,
+          status,
+          assigneeId,
+          dueDate,
+          search,
+        });
 
-      const populatedTasks = tasks.documents.map((task) => {
-        const project = projects.documents.find(
-          (project) => project.$id === task.projectId
+        const member = await getMember({
+          databases,
+          workspaceId,
+          userId: user.$id,
+        });
+
+        if (!member) {
+          console.log("Authorization failed:", {
+            workspaceId,
+            userId: user.$id,
+          });
+          return c.json({ error: "Unauthorized" }, 401);
+        }
+
+        const query = [
+          Query.equal("workspaceId", workspaceId),
+          Query.orderDesc("$createdAt"),
+        ];
+
+        if (projectId) {
+          query.push(Query.equal("projectId", projectId));
+        }
+        if (status) {
+          query.push(Query.equal("status", status));
+        }
+        if (assigneeId) {
+          query.push(Query.equal("assigneeId", assigneeId));
+        }
+        if (dueDate) {
+          query.push(Query.equal("dueDate", dueDate));
+        }
+        if (search) {
+          query.push(Query.equal("search", search));
+        }
+
+        console.log("Executing tasks query with:", {
+          DATABASE_ID,
+          TASKS_ID,
+          queryLength: query.length,
+        });
+
+        const tasks = await databases.listDocuments<Task>(
+          DATABASE_ID,
+          TASKS_ID,
+          query
         );
-        const assignee = assignees.find(
-          (assignee) => assignee.$id === task.assigneeId
+
+        console.log("Tasks fetched:", {
+          count: tasks.documents.length,
+        });
+
+        const projectIds = tasks.documents.map((task) => task.projectId);
+        const assigneeIds = tasks.documents.map((task) => task.assigneeId);
+
+        console.log("Fetching related data:", {
+          projectIdsCount: projectIds.length,
+          assigneeIdsCount: assigneeIds.length,
+        });
+
+        const projects = await databases.listDocuments<Project>(
+          DATABASE_ID,
+          PROJECTS_ID,
+          projectIds.length > 0 ? [Query.contains("$id", projectIds)] : []
         );
-        return {
-          ...task,
-          project,
-          assignee,
-        };
-      });
-      return c.json({
-        data: {
-          ...tasks,
-          documents: populatedTasks,
-        },
-      });
+
+        const members = await databases.listDocuments(
+          DATABASE_ID,
+          MEMBERS_ID,
+          assigneeIds.length > 0 ? [Query.contains("$id", assigneeIds)] : []
+        );
+
+        const assignees = await Promise.all(
+          members.documents.map(async (member) => {
+            if (!member.userId) {
+              console.error(
+                `Missing userId for member: ${JSON.stringify(member)}`
+              );
+              return { ...member, name: null, email: null };
+            }
+            try {
+              const user = await users.get(member.userId);
+              return {
+                ...member,
+                name: user.name,
+                email: user.email,
+              };
+            } catch (error) {
+              const appwriteError = error as AppwriteException;
+              console.error(
+                `Failed to fetch user for ID ${member.userId}:`,
+                appwriteError
+              );
+              return { ...member, name: null, email: null };
+            }
+          })
+        );
+
+        const populatedTasks = tasks.documents.map((task) => {
+          const project = projects.documents.find(
+            (project) => project.$id === task.projectId
+          );
+          const assignee = assignees.find(
+            (assignee) => assignee.$id === task.assigneeId
+          );
+          return {
+            ...task,
+            project,
+            assignee,
+          };
+        });
+
+        console.log("Response preparation complete:", {
+          tasksCount: populatedTasks.length,
+        });
+
+        return c.json({
+          data: {
+            ...tasks,
+            documents: populatedTasks,
+          },
+        });
+      } catch (error) {
+        const appwriteError = error as AppwriteException;
+        console.error("Route error:", {
+          message: appwriteError.message,
+          code: appwriteError.code,
+          type: appwriteError.type,
+          stack: appwriteError.stack,
+        });
+
+        return c.json(
+          {
+            error: "Internal Server Error",
+            details: appwriteError.message,
+            type: appwriteError.type,
+            code: appwriteError.code,
+          },
+          500
+        );
+      }
     }
   )
   .post(
