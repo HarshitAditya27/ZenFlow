@@ -10,7 +10,7 @@ function Sidebar() {
   return (
     <aside className="h-full bg-neutral-100 p-4 w-full">
       <Link href="/">
-        <Image src="/logo.svg" alt="logo" height={48} width={164} />
+        <Image src="/l1.png" alt="logo" height={48} width={164} />
       </Link>
       <DottedSeperator className="my-4" />
       <WorkspaceSwitcher />

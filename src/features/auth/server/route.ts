@@ -23,12 +23,12 @@ const app = new Hono()
       sameSite: "strict",
       maxAge: 60 * 60 * 24 * 30,
     });
-    console.log({ email, password });
+    // console.log({ email, password });
     return c.json({ success: true });
   })
   .post("/register", zValidator("json", registerSchema), async (c) => {
     const { name, email, password } = c.req.valid("json");
-    console.log({ name, email, password });
+    // console.log({ name, email, password });
     const { account } = await createAdminClient();
     await account.create(ID.unique(), email, password, name);
     const session = await account.createEmailPasswordSession(email, password);

@@ -8,18 +8,18 @@ import { usePathname } from "next/navigation";
 const pathnameMap = {
   tasks: {
     title: "My Tasks",
-    description: "View all of your tasks here",
+    description: "View all your tasks in one place.",
   },
   projects: {
     title: "My Project",
-    description: "View tasks of your project",
+    description: "View and manage tasks for your projects.",
   },
 };
 
 const defaultMap = {
-  title: "Home",
+  title: "Welcome to Zenflow 🎊",
   description:
-    "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam fuga rem doloremque voluptatum odio inventore tempora quibusdam accusamus magnam dolor iure, iusto repellat cumque possimus doloribus rerum, dignissimos atque eos?",
+    "ZenFlow is a comprehensive project management application designed to help you effectively track and manage your project's progress. With ZenFlow, you can create workspaces tailored to your needs, organize projects within them, and assign tasks to streamline workflows. Track progress seamlessly and ensure every milestone is achieved efficiently.",
 };
 
 function Navbar() {
