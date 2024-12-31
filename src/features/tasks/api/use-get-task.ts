@@ -37,7 +37,7 @@ export const useGetTask = ({ taskId }: UseGetTaskProps) => {
     queryKey: ["task", taskId],
     queryFn: async () => {
       try {
-        console.log(`Fetching task with ID: ${taskId}`);
+        // console.log(`Fetching task with ID: ${taskId}`);
         const response = await client.api.tasks[":taskId"].$get({
           param: {
             taskId,
@@ -50,7 +50,7 @@ export const useGetTask = ({ taskId }: UseGetTaskProps) => {
         }
 
         const { data } = await response.json();
-        console.log(`Successfully fetched task ${taskId}:`, data);
+        // console.log(`Successfully fetched task ${taskId}:`, data);
         return data;
       } catch (error) {
         console.error(`Error fetching task ${taskId}:`, error);

@@ -27,6 +27,7 @@ import {
 import { useForm } from "react-hook-form";
 import { registerSchema } from "../schemas";
 import { useRegister } from "../api/use-register";
+import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth";
 
 function SignUpCard() {
   const { mutate, isPending } = useRegister();
@@ -124,6 +125,7 @@ function SignUpCard() {
       <CardContent className="p-7 flex flex-col gap-y-4">
         <Button
           variant="secondary"
+          onClick={() => signUpWithGoogle()}
           disabled={isPending}
           size="lg"
           className="w-full"
@@ -133,6 +135,7 @@ function SignUpCard() {
         </Button>
         <Button
           variant="secondary"
+          onClick={() => signUpWithGithub()}
           disabled={isPending}
           size="lg"
           className="w-full"

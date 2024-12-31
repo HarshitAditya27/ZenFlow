@@ -81,14 +81,14 @@ export const useGetTasks = ({
     ],
     queryFn: async () => {
       try {
-        console.log("Fetching tasks with params:", {
-          workspaceId,
-          projectId,
-          status,
-          search,
-          assigneeId,
-          dueDate,
-        });
+        // console.log("Fetching tasks with params:", {
+        //   workspaceId,
+        //   projectId,
+        //   status,
+        //   search,
+        //   assigneeId,
+        //   dueDate,
+        // });
 
         const response = await client.api.tasks.$get({
           query: {
@@ -107,7 +107,7 @@ export const useGetTasks = ({
         }
 
         const { data } = await response.json();
-        console.log("Successfully fetched tasks:", data);
+        // console.log("Successfully fetched tasks:", data);
         return data;
       } catch (error) {
         console.error("Error fetching tasks:", error);

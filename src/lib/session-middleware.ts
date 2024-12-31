@@ -82,18 +82,18 @@ type AdditionalContext = {
 export const sessionMiddleware = createMiddleware<AdditionalContext>(
   async (c, next) => {
     try {
-      console.log("Environment check:", {
-        hasEndpoint: !!process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT,
-        hasProject: !!process.env.NEXT_PUBLIC_APPWRITE_PROJECT,
-        hasDatabase: !!process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
-      });
+      // console.log("Environment check:", {
+      //   hasEndpoint: !!process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT,
+      //   hasProject: !!process.env.NEXT_PUBLIC_APPWRITE_PROJECT,
+      //   hasDatabase: !!process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
+      // });
 
       const client = new Client()
         .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
         .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
 
       const session = getCookie(c, AUTH_COOKIE);
-      console.log("Session check:", { hasSession: !!session });
+      // console.log("Session check:", { hasSession: !!session });
 
       if (!session) {
         return c.json({ error: "Unauthorized" }, 401);
@@ -101,21 +101,21 @@ export const sessionMiddleware = createMiddleware<AdditionalContext>(
 
       client.setSession(session);
 
-      console.log("Initializing Appwrite services...");
+      // console.log("Initializing Appwrite services...");
       const account = new Account(client);
       const databases = new Databases(client);
       const storage = new Storage(client);
 
-      console.log("Fetching user account...");
+      // console.log("Fetching user account...");
       const user = await account.get();
-      console.log("User fetched successfully:", { userId: user.$id });
+      // console.log("User fetched successfully:", { userId: user.$id });
 
       c.set("account", account);
       c.set("databases", databases);
       c.set("storage", storage);
       c.set("user", user);
 
-      console.log("Middleware setup complete");
+      // console.log("Middleware setup complete");
       await next();
     } catch (error) {
       const appwriteError = error as AppwriteException;

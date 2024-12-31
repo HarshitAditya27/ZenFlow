@@ -182,10 +182,10 @@ const app = new Hono()
       try {
         // Initial setup and checks
         const databases = c.get("databases");
-        console.log("Databases instance check:", {
-          isDefined: !!databases,
-          hasListDocuments: !!databases?.listDocuments,
-        });
+        // console.log("Databases instance check:", {
+        //   isDefined: !!databases,
+        //   hasListDocuments: !!databases?.listDocuments,
+        // });
 
         const { users } = await createAdminClient();
         const user = c.get("user");
@@ -193,14 +193,14 @@ const app = new Hono()
         const { workspaceId, projectId, status, search, assigneeId, dueDate } =
           c.req.valid("query");
 
-        console.log("Query parameters:", {
-          workspaceId,
-          projectId,
-          status,
-          assigneeId,
-          dueDate,
-          search,
-        });
+        // console.log("Query parameters:", {
+        //   workspaceId,
+        //   projectId,
+        //   status,
+        //   assigneeId,
+        //   dueDate,
+        //   search,
+        // });
 
         const member = await getMember({
           databases,
@@ -237,11 +237,11 @@ const app = new Hono()
           query.push(Query.equal("search", search));
         }
 
-        console.log("Executing tasks query with:", {
-          DATABASE_ID,
-          TASKS_ID,
-          queryLength: query.length,
-        });
+        // console.log("Executing tasks query with:", {
+        //   DATABASE_ID,
+        //   TASKS_ID,
+        //   queryLength: query.length,
+        // });
 
         const tasks = await databases.listDocuments<Task>(
           DATABASE_ID,
@@ -249,17 +249,17 @@ const app = new Hono()
           query
         );
 
-        console.log("Tasks fetched:", {
-          count: tasks.documents.length,
-        });
+        // console.log("Tasks fetched:", {
+        //   count: tasks.documents.length,
+        // });
 
         const projectIds = tasks.documents.map((task) => task.projectId);
         const assigneeIds = tasks.documents.map((task) => task.assigneeId);
 
-        console.log("Fetching related data:", {
-          projectIdsCount: projectIds.length,
-          assigneeIdsCount: assigneeIds.length,
-        });
+        // console.log("Fetching related data:", {
+        //   projectIdsCount: projectIds.length,
+        //   assigneeIdsCount: assigneeIds.length,
+        // });
 
         const projects = await databases.listDocuments<Project>(
           DATABASE_ID,
@@ -313,9 +313,9 @@ const app = new Hono()
           };
         });
 
-        console.log("Response preparation complete:", {
-          tasksCount: populatedTasks.length,
-        });
+        // console.log("Response preparation complete:", {
+        //   tasksCount: populatedTasks.length,
+        // });
 
         return c.json({
           data: {
