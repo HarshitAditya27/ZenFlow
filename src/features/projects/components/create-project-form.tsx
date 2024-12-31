@@ -122,7 +122,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
                       <div className="flex flex-col">
                         <p className="text-sm">Project Icon</p>
                         <p className="text-sm text-muted-foreground">
-                          JPG, PNG SVG or JPEG, max 50 mb
+                          JPG, PNG SVG or JPEG, max 1 mb
                         </p>
                         <input
                           className="hidden"
