@@ -32,7 +32,7 @@
 - Manual **authentication** and **Google** and **GitHub OAuth** **authentication** 🔒.
 - **Collaborate** with others users for projects via the **invite link** functionality 📬.
 - **Individual pages** for each task, project and workspace 📄.
-- **Drag and drop** functionality in Kanbabn board to change the status of tasks 🗂️.
+- **Drag and drop** functionality in Kanban board to change the status of tasks 🗂️.
 - Add specific **description** for each tasks 📝.
 - Tasks can also be seen in **Calendar** which specifies the due date 🗓️.
 - **Analytics** for each workspace and projects 📶.
